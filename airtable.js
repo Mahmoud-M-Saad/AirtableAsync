@@ -26,6 +26,25 @@ const baseId = process.env.baseId;
 const tableIdOrName = process.env.tableIdOrName;
 const accessToken = process.env.accessToken;
 
+//! MSaad: Getting All Airtable Fileds ID Function 
+async function gettingFiledsID() {
+  try {
+      const response = await axios.get(
+          `https://api.airtable.com/v0/meta/bases/${baseId}/tables`,
+          {
+              headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+              }
+          }
+      );
+      console.log(response.data.tables[0].fields);
+      return response.data.tables[0].fields;
+  } catch (error) {
+      console.error('Error making API request:', error.message);
+  }
+}
+
 const axiosReq = axios.create({
     //https://api.airtable.com/v0/meta/bases/{baseId}/tables
     // baseURL: `https://api.airtable.com/v0/${baseId}/${tableIdOrName}`,
