@@ -1,0 +1,8 @@
+Manually
+1. Import CSV file to the MySQL database
+2. Map the fields names to the fields ids
+
+Automation
+3. Get the fields from airtable
+4. Delete the records with ids found in the database
+5. Insert the records in the database
