@@ -198,7 +198,7 @@ app.get('/test', (req, res) => {
     res.send('Inserted');
   }).catch(error => {
     // console.error('Error making Airtable request:', error.message);
-  });
+  });yield
 })
 
 const findAndDeleteRecordById = async (id) => {
