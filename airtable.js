@@ -47,7 +47,7 @@ const axiosReq = axios.create({
   },
   params: {
     view: '',
-    // returnFieldsByFieldId: true,
+    returnFieldsByFieldId: true,
   }
 });
 
@@ -78,33 +78,140 @@ const axiosReq = axios.create({
 // });
 
 app.get('/test', (req, res) => {
-  const results = [];
-  axiosReq.get('/')
-    .then(response => {
-      for (let i = 0; i < response.data.records.length; i++) {
-        findAndDeleteRecordById(response.data.records[i].id);
-        results.push(response.data.records[i].id);
-      };
-    })
-    .catch(error => {
-      console.error('Error making Airtable request:', error.message);
-    });
+  // const results = [];
+  // axiosReq.get('/')
+  //   .then(response => {
+  //     console.log(response.data.records);
+  //     for (let i = 0; i < response.data.records.length; i++) {
+  //       findAndDeleteRecordById(response.data.records[i].id);
+  //       results.push(response.data.records[i].id);
+  //     };
+  //   })
+  //   .catch(error => {
+  //     console.error('Error making Airtable request:', error.message);
+  //   });
+
+  // findAndDeleteRecordById('6f7fdb36-9d9c-11ee-b760-40b03410791r').then(() => {
+  //   res.send('Deleted');
+  // }).catch(error => {
+  //   console.error('Error making Airtable request:', error.message);
+  // });
+
+  insertRecord(
+    {
+      "GPS/Billing Company:": "Techtronics",
+      "Customer Name:": "Tech Solutions Inc.",
+      "My Notes (editable)": "Installation instructions received.",
+      "Work Order:": "WO-12345",
+      "PO/Case/WO:": "PO-6789",
+      "Job Type:": "Maintenance",
+      "Asset ID:": 9876543,
+      "Asset ID Pic:": "asset_pic.jpg",
+      "Asset Type:": "Vehicle",
+      "Date:": "11/10/2023",
+      "Time:": "10:30 AM",
+      "Scheduler:": "John Doe",
+      "Tech:": "Emily Smith",
+      "All Notes:": "Customer requested additional information.",
+      "PDF:": "maintenance_instructions.pdf",
+      "Address:": "Tech Solutions Inc. - 456 Tech Lane, 90210 Techville, CA, USA",
+      "Pic of VIN": "vin_pic.jpg",
+      "VIN:": "ABC123XYZ456",
+      "Year:": "2020",
+      "Make:": "Toyota",
+      "Model:": "Camry",
+      "Odometer:": "30,000 miles",
+      "Hours:": "120 hours",
+      "GPS SN:": "T9876",
+      "Camera SN:": "C5432",
+      "Removed GPS SN:": "",
+      "Removed Camera SN:": "",
+      "Add-On Type:": "Temperature Sensor",
+      "Add-On SN:": "TS7890",
+      "2nd Add-On Type:": "",
+      "2nd Add-On SN:": "",
+      "Removed  Add-On SN:": "",
+      "Removed 2nd Add-On SN:": "",
+      "DE RE De Asset Label:": "AssetLabel-123",
+      "DE RE De Asset VIN:": "DE-XYZ-789",
+      "GPS Model:": "Model-X",
+      "GPS Wiring:": "Connected",
+      "Camera Wiring:": "Not Applicable",
+      "Add-On Wiring:": "Connected",
+      "2nd Add-On Wiring:": "",
+      "Removals w/ Install": "No",
+      "Removed Company:": "",
+      "GPS Verification:": "Verified",
+      "Camera Verification": "Not Applicable",
+      "Add On Verification": "Verified",
+      "2nd Add On Verification": "",
+      "Reason for Service": "Routine Maintenance",
+      "Tampering Pic:": "tampering_pic.jpg",
+      "Job Report?": "Yes",
+      "Job Report Reason:": "Completed successfully",
+      "Job Report Fault:": "",
+      "Time Lost:": "0 hours",
+      "Explanation:": "Routine maintenance performed as scheduled.",
+      "State:": "CA",
+      "Site Contact:": "Mr. Tech Manager",
+      "Not Dispatched Screenshot:": "",
+      "Asset Damage?": "No",
+      "GPS Location:": "34.0522° N, 118.2437° W",
+      "ID": "",
+      "Submission No.": "",
+      "App Name": "TechTrack",
+      "Record Time": "11/11/2023 14:45",
+      "Customer Email": "customer@example.com",
+      "Tech Email": "tech@example.com",
+      "Emailyesno": "Yes",
+      "Jobsheet": "maintenance_jobsheet.pdf",
+      "SubmissionID": "193508056",
+      "EditDetect": "",
+      "JSON Full Record": "",
+      "Comparison": "",
+      "Removed Add-On": "",
+      "Removed 2nd Add-On": "",
+      "Pin/Password": "1234",
+      "Files/Attachments": "maintenance_report.doc",
+      "WO Notes:": "No additional notes.",
+      "License Plate": "TECH-123",
+      "Check": "",
+      "Sked Email": "scheduled@example.com",
+      "Replaced Harness": "Yes",
+      "Pic of GPS Serial": "gps_serial_pic.jpg",
+      "Pic of Camera Serial": "",
+      "Last Modified": "11/11/2023 16:30",
+      "Trip Fee": "$50",
+      "Additional Serial Numbers": "Serial-1: 12345, Serial-2: 67890",
+      "Share Files": "https://web.techsolutions.com/file123",
+      "Asset ID": "",
+      "Day Rate": "$150",
+      "Billing Category": "Maintenance",
+      "Field 89": "",
+      "Billing Customer Record": "Tech Solutions Inc. - 987",
+      "Billing Type": "Credit Card",
+      "Billing Info": "**** **** **** 1234",
+      "Billing Customer Name": "Tech Solutions Inc.",
+      "airtableId": "7a1a2c10-9d9c-11ee-b760-40b03410791s"
+    }
+  ).then(() => {
+    res.send('Inserted');
+  }).catch(error => {
+    // console.error('Error making Airtable request:', error.message);
+  });
 })
 
 const findAndDeleteRecordById = async (id) => {
   try {
-    const [results, metadata] = await sequelize.query(`SELECT * FROM masterdata WHERE id = :id`, {
+    const [results, metadata] = await sequelize.query(`SELECT * FROM masterdata WHERE airtableId = :id`, {
       replacements: { id: id },
       type: Sequelize.QueryTypes.SELECT,
     });
-
-    if (results.length > 0) {
-      const deletedRows = await sequelize.query(`DELETE FROM masterdata WHERE id = :id`, {
+    if (results) {
+      await sequelize.query(`DELETE FROM masterdata WHERE airtableId = :id`, {
         replacements: { id: id },
         type: Sequelize.QueryTypes.DELETE,
       });
-
-      console.log(`Deleted ${deletedRows[0]} record(s)`);
     } else {
       console.log('Record not found');
     }
@@ -113,30 +220,38 @@ const findAndDeleteRecordById = async (id) => {
   }
 };
 
-// const insertMultipleRecords = async (records) => {
-//   try {
-//     const values = records.map(record => `(${Object.values(record).map(value => sequelize.escape(value)).join(', ')})`).join(', ');
-
-//     const [result, metadata] = await sequelize.query(`INSERT INTO masterdata (${Object.keys(records[0]).join(', ')}) VALUES ${values}`);
-
-//     console.log(`Inserted ${result.affectedRows} record(s)`);
-//   } catch (error) {
-//     console.error('Error:', error.message);
-//   }
-// };
-
-async function createUser(username, email) {
+const insertRecord = async (record) => {
   try {
-    const newUser = await User.create({
-      username: username,
-      number: email,
+    // Insert a record to the masterdata table, take the column names from the record object keys and values from the record object values
+    const fields = Object.keys(record).map(key => `\`${key}\``).join(',');
+    const values = Object.values(record).map(value => `'${value}'`).join(',');    
+    // console.log(values);
+    const [results, metadata] = await sequelize.query(`INSERT INTO masterdata (${fields}) VALUES (${values})`, {
+      replacements: record,
+      type: Sequelize.QueryTypes.INSERT,
     });
-    return newUser;
+    if (results) {
+      console.log('Record inserted successfully');
+      // console.log(results);
+    }
   } catch (error) {
-    console.error('Error creating user:', error);
-    throw error;
+    console.error('Error:', error.message);
   }
-}
+};
+
+
+// async function createUser(username, email) {
+//   try {
+//     const newUser = await User.create({
+//       username: username,
+//       number: email,
+//     });
+//     return newUser;
+//   } catch (error) {
+//     console.error('Error creating user:', error);
+//     throw error;
+//   }
+// }
 
 sequelize.sync().then(() => {
   app.listen(process.env.PORT || 3000, () => {
